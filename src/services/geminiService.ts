@@ -19,7 +19,8 @@ export async function generateHindiResponse(prompt: string): Promise<string> {
             },
         });
         
-        return response.text;
+        // response.text is undefined when the model returns no text (for example a blocked prompt).
+        return response.text ?? "माफ़ कीजिए, मुझे कोई जवाब नहीं मिला। कृपया दोबारा कोशिश करें।";
 
     } catch (error) {
         console.error("Error generating response from Gemini:", error);

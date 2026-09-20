@@ -26,6 +26,16 @@ import { MessageBubble } from './components/MessageBubble';
  * 4.  Click the microphone button to start speaking in Hindi. The assistant will transcribe your speech, generate a response, and speak it back to you.
  */
 
+// Minimal shapes for the parts of the Web Speech API this component reads; the browser types
+// for SpeechRecognition are not in TypeScript's DOM lib.
+interface SpeechResultEvent {
+    results: { [index: number]: { [index: number]: { transcript: string } } };
+}
+
+interface SpeechErrorEvent {
+    error: string;
+}
+
 declare global {
     interface Window {
         SpeechRecognition: any;
@@ -109,12 +119,12 @@ const App: React.FC = () => {
         recognition.interimResults = false;
         recognition.lang = 'hi-IN';
 
-        recognition.onresult = (event) => {
+        recognition.onresult = (event: SpeechResultEvent) => {
             const transcript = event.results[0][0].transcript;
             processTranscription(transcript);
         };
 
-        recognition.onerror = (event) => {
+        recognition.onerror = (event: SpeechErrorEvent) => {
             setError(`Speech recognition error: ${event.error}`);
             setIsListening(false);
         };
